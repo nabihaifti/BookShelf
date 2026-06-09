@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'Sign in — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <div class="auth-card">
+      <h1>welcome back</h1>
+      <p class="sub">sign in to your bookshelf account</p>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="form-error"><%= error %></div>
+      <% } %>
+
+      <form action="/login" method="post">
+        <div class="form-group">
+          <label>email</label>
+          <input type="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label>password</label>
+          <input type="password" name="password" required />
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;">sign in</button>
+      </form>
+
+      <p class="form-foot">new here? <a href="/register">create an account</a></p>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

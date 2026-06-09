@@ -1,0 +1,35 @@
+<%- include('partials/head', { title: 'Search' }) %>
+<%- include('partials/header') %>
+
+<main class="container">
+  <h1 class="page-title">Search Books</h1>
+<form action="/search" method="GET" class="search-form">
+  <input
+    type="text"
+    name="q"
+    value="<%= query %>"
+    placeholder="Search by title or author..."
+    class="search-input"
+  />
+  <button type="submit" class="search-btn">Search</button>
+</form>
+
+  <% if (lazyFetched) { %>
+    <p class="lazy-notice">✨ Found new books and added them to the library!</p>
+  <% } %>
+
+  <% if (query && results.length === 0) { %>
+    <div class="empty-state">
+      <p>No books found for "<strong><%= query %></strong>".</p>
+      <p>Try a different title or author name.</p>
+    </div>
+  <% } %>
+
+  <div class="book-grid">
+    <% for (const book of results) { %>
+      <%- include('partials/book-card', { book }) %>
+    <% } %>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

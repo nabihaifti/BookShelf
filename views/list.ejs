@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: list.name + ' — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 30px; margin-bottom: 6px;"><%= list.name %></h1>
+      <div style="color: var(--ink-soft); font-size: 14px;">
+        by <a href="/profile/<%= list.ownerId %>"><%= list.ownerName %></a> · <%= books.length %> book<%= books.length === 1 ? '' : 's' %>
+      </div>
+      <% if (list.description) { %>
+        <p style="margin-top: 10px; color: var(--ink-soft);"><%= list.description %></p>
+      <% } %>
+    </div>
+
+    <% if (books.length === 0) { %>
+      <p style="color: var(--muted);">no books in this list yet.</p>
+    <% } else { %>
+      <div class="book-grid">
+        <% books.forEach(book => { %>
+          <div style="position: relative;">
+            <%- include('partials/book-card', { book }) %>
+            <% if (currentUser && currentUser.id === list.ownerId) { %>
+              <form action="/list/<%= list.id %>/remove/<%= book.id %>" method="post" style="position: absolute; top: 4px; right: 4px; margin: 0;">
+                <button type="submit" style="background: white; border: 1px solid var(--border); border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; color: var(--danger);">×</button>
+              </form>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

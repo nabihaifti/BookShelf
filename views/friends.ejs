@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'Friends — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <h1 style="font-size: 28px; margin-bottom: 20px;">friends</h1>
+
+    <form action="/friends" method="get" style="margin-bottom: 28px;">
+      <input type="text" name="q" placeholder="search for someone by name..." value="<%= query %>"
+             style="width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: white;" />
+    </form>
+
+    <% if (query) { %>
+      <h2 class="section-h">search results</h2>
+      <% if (searchResults.length === 0) { %>
+        <p style="color: var(--muted); margin-bottom: 24px;">no users matching "<%= query %>"</p>
+      <% } else { %>
+        <% searchResults.forEach(u => { %>
+          <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <a href="/profile/<%= u.User_ID %>" style="color: var(--ink); font-weight: 600;"><%= u.Name %></a>
+            <form action="/friends/<%= u.User_ID %>" method="post" style="margin: 0;">
+              <button type="submit" class="btn-pink" style="padding: 6px 14px; font-size: 13px;">add friend</button>
+            </form>
+          </div>
+        <% }) %>
+      <% } %>
+    <% } %>
+
+    <% if (incoming.length > 0) { %>
+      <h2 class="section-h pink" style="margin-top: 28px;">friend requests</h2>
+      <% incoming.forEach(u => { %>
+        <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <a href="/profile/<%= u.User_ID %>" style="color: var(--ink); font-weight: 600;"><%= u.Name %></a>
+          <div style="display: flex; gap: 8px;">
+            <form action="/friends/<%= u.User_ID %>/accept" method="post" style="margin: 0;">
+              <button type="submit" class="btn-primary" style="padding: 6px 14px; font-size: 13px;">accept</button>
+            </form>
+            <form action="/friends/<%= u.User_ID %>/delete" method="post" style="margin: 0;">
+              <button type="submit" class="btn" style="padding: 6px 14px; font-size: 13px;">decline</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <% if (outgoing.length > 0) { %>
+      <h2 class="section-h" style="margin-top: 28px;">requests sent</h2>
+      <% outgoing.forEach(u => { %>
+        <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <a href="/profile/<%= u.User_ID %>" style="color: var(--ink); font-weight: 600;"><%= u.Name %></a>
+          <form action="/friends/<%= u.User_ID %>/delete" method="post" style="margin: 0;">
+            <button type="submit" class="btn" style="padding: 6px 14px; font-size: 13px;">cancel</button>
+          </form>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <h2 class="section-h" style="margin-top: 28px;">your friends</h2>
+    <% if (friends.length === 0) { %>
+      <p style="color: var(--muted);">no friends yet. search for someone above!</p>
+    <% } else { %>
+      <% friends.forEach(u => { %>
+        <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <a href="/profile/<%= u.User_ID %>" style="color: var(--ink); font-weight: 600;"><%= u.Name %></a>
+          <form action="/friends/<%= u.User_ID %>/delete" method="post" style="margin: 0;">
+            <button type="submit" class="btn-link" style="color: var(--danger); font-size: 13px;">unfriend</button>
+          </form>
+        </div>
+      <% }) %>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

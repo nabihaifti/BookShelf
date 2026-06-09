@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: book.title + ' — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <div style="display: grid; grid-template-columns: 220px 1fr; gap: 32px; margin-bottom: 32px;">
+
+      <div>
+        <div class="book-cover" style="aspect-ratio: 2/3;">
+          <% if (book.coverUrl) { %>
+            <img src="<%= book.coverUrl %>" alt="<%= book.title %>" />
+          <% } else { %>
+            <%= book.title %>
+          <% } %>
+        </div>
+      </div>
+
+      <div>
+        <h1 style="font-size: 30px; margin-bottom: 8px;"><%= book.title %></h1>
+
+        <% if (book.authors.length > 0) { %>
+          <div style="font-size: 16px; color: var(--ink-soft); margin-bottom: 12px;">
+            by <%= book.authors.join(', ') %>
+          </div>
+        <% } %>
+
+        <% if (book.avgRating) { %>
+          <div style="margin-bottom: 16px;">
+            <span style="color: var(--gold); font-size: 18px;">
+              <%= '★'.repeat(Math.round(book.avgRating)) + '☆'.repeat(5 - Math.round(book.avgRating)) %>
+            </span>
+            <span style="color: var(--ink-soft); margin-left: 8px;">
+              <%= book.avgRating %> · <%= book.ratingCount %> review<%= book.ratingCount === 1 ? '' : 's' %>
+            </span>
+          </div>
+        <% } %>
+
+        <% if (book.genres.length > 0) { %>
+          <div style="margin-bottom: 16px;">
+            <% book.genres.forEach(g => { %>
+              <span style="background: var(--matcha-soft); color: var(--matcha-deep); padding: 4px 10px; border-radius: 999px; font-size: 12px; margin-right: 4px;"><%= g %></span>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <% if (currentUser) { %>
+          <div style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
+            <% const shelves = [
+              { value: 'want_to_read', label: 'want to read' },
+              { value: 'currently_reading', label: 'currently reading' },
+              { value: 'read', label: 'read' }
+            ]; %>
+            <% shelves.forEach(s => { %>
+              <form action="/book/<%= book.id %>/shelf" method="post" style="margin: 0;">
+                <input type="hidden" name="status" value="<%= myShelfStatus === s.value ? 'remove' : s.value %>" />
+                <button type="submit" class="<%= myShelfStatus === s.value ? 'btn-primary' : 'btn' %>" style="padding: 6px 12px; font-size: 13px;">
+                  <%= myShelfStatus === s.value ? '✓ ' : '' %><%= s.label %>
+                </button>
+              </form>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <% if (currentUser && myLists && myLists.length > 0) { %>
+          <form action="/book/<%= book.id %>/add-to-list" method="post" style="display: flex; gap: 8px; margin-bottom: 16px;">
+            <select name="listId" required style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: white; flex: 1;">
+              <% myLists.forEach(l => { %>
+                <option value="<%= l.List_ID %>"><%= l.List_Name %></option>
+              <% }) %>
+            </select>
+            <button type="submit" class="btn-pink">add to list</button>
+          </form>
+        <% } %>
+
+        <% if (book.synopsis) { %>
+          <p style="line-height: 1.6; color: var(--ink-soft); margin-bottom: 16px;"><%= book.synopsis %></p>
+        <% } %>
+
+        <div style="font-size: 13px; color: var(--muted);">
+          <% if (book.year) { %>Published <%= book.year %><% } %>
+          <% if (book.language) { %> · Language: <%= book.language %><% } %>
+        </div>
+      </div>
+    </div>
+
+    <% if (currentUser) { %>
+      <% const myReview = reviews.find(r => r.User_ID === currentUser.id); %>
+      <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 24px;">
+        <h3 style="font-size: 16px; margin-bottom: 12px;">
+          <%= myReview ? 'edit your review' : 'write a review' %>
+        </h3>
+        <form action="/book/<%= book.id %>/review" method="post">
+          <div class="form-group">
+            <label>rating</label>
+            <select name="rating" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: white;">
+              <option value="">choose...</option>
+              <% for (let i = 5; i >= 1; i--) { %>
+                <option value="<%= i %>" <%= myReview && myReview.Rating === i ? 'selected' : '' %>>
+                  <%= '★'.repeat(i) %> (<%= i %>)
+                </option>
+              <% } %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>your thoughts (optional)</label>
+            <textarea name="text" rows="3" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: white; resize: vertical;"><%= myReview ? myReview.Text || '' : '' %></textarea>
+          </div>
+          <button type="submit" class="btn-primary"><%= myReview ? 'update review' : 'post review' %></button>
+        </form>
+      </div>
+    <% } %>
+
+    <h2 class="section-h">reviews</h2>
+    <% if (reviews.length === 0) { %>
+      <p style="color: var(--muted);">No reviews yet.</p>
+    <% } else { %>
+      <% reviews.forEach(r => { %>
+        <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+            <div style="font-size: 13px; color: var(--muted);">
+              <a href="/profile/<%= r.User_ID %>" style="color: var(--ink); font-weight: 600;"><%= r.UserName %></a>
+              ·
+              <span style="color: var(--gold);"><%= '★'.repeat(r.Rating) + '☆'.repeat(5 - r.Rating) %></span>
+            </div>
+            <% if (currentUser && currentUser.id === r.User_ID) { %>
+              <form action="/book/<%= book.id %>/review/delete" method="post" style="margin: 0;">
+                <button type="submit" class="btn-link" style="color: var(--danger); font-size: 12px;">delete</button>
+              </form>
+            <% } %>
+          </div>
+          <% if (r.Text) { %>
+            <div style="font-size: 14px; color: var(--ink-soft); line-height: 1.5;"><%= r.Text %></div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

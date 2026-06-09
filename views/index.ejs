@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'Home — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+
+    <% if (currentUser) { %>
+      <section class="hero">
+        <h1>welcome back, <%= currentUser.name %></h1>
+        <p>track what you're reading, share thoughts on books, and see what your friends are into.</p>
+        <a href="/lists" class="btn-primary">my shelves</a>
+      </section>
+    <% } else { %>
+      <section class="hero">
+        <h1>your bookshelf, online</h1>
+        <p>track books, write reviews, follow friends. join the bookshelf community today.</p>
+        <a href="/register" class="btn-primary">join now</a>
+      </section>
+    <% } %>
+
+    <section style="margin-bottom: 40px;">
+      <h2 class="section-h">recently added</h2>
+      <% if (recent.length === 0) { %>
+        <p style="color: var(--muted);">No books yet. Run the seed script!</p>
+      <% } else { %>
+        <div class="book-grid">
+          <% recent.forEach(book => { %>
+            <%- include('partials/book-card', { book }) %>
+          <% }) %>
+        </div>
+      <% } %>
+    </section>
+
+    <% if (reviews.length > 0) { %>
+      <section>
+        <h2 class="section-h pink">latest reviews</h2>
+        <% reviews.forEach(r => { %>
+          <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;">
+            <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">
+              <strong style="color: var(--ink);"><%= r.UserName %></strong>
+              reviewed
+              <a href="/book/<%= r.Book_ID %>"><strong style="color: var(--ink);"><%= r.BookTitle %></strong></a>
+              ·
+              <span style="color: var(--gold);">
+                <%= '★'.repeat(r.Rating) + '☆'.repeat(5 - r.Rating) %>
+              </span>
+            </div>
+            <% if (r.Text) { %>
+              <div style="font-size: 14px; color: var(--ink-soft); line-height: 1.5;"><%= r.Text %></div>
+            <% } %>
+          </div>
+        <% }) %>
+      </section>
+    <% } %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

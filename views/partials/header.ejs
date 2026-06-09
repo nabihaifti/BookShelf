@@ -1,0 +1,35 @@
+<header class="site-header">
+  <a href="/" class="brand">
+    <span class="brand-mark"></span>
+    bookshelf
+  </a>
+
+  <form action="/search" method="get" class="search-form">
+    <input type="text" name="q" placeholder="search books, authors..." />
+  </form>
+
+  <nav class="site-nav">
+    <% if (currentUser) { %>
+      <a href="/">browse</a>
+      <a href="/shelves">shelves</a>
+      <a href="/lists">lists</a>
+      <a href="/friends">friends</a>
+<a href="/notifications" class="nav-link-with-dot">
+  notifications
+  <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+    <span class="badge-dot"></span>
+  <% } %>
+</a>
+      <a href="/profile/<%= currentUser.id %>" class="avatar">
+        <%= currentUser.name.charAt(0).toUpperCase() %>
+      </a>
+      <form action="/logout" method="post" class="logout-form">
+        <button type="submit" class="btn-link">logout</button>
+      </form>
+    <% } else { %>
+      <a href="/">browse</a>
+      <a href="/login">sign in</a>
+      <a href="/register" class="btn-primary">join</a>
+    <% } %>
+  </nav>
+</header>

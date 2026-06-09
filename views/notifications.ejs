@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'Notifications — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <h1 style="font-size: 28px; margin-bottom: 20px;">notifications</h1>
+
+    <% if (notifications.length === 0) { %>
+      <p style="color: var(--muted);">no notifications yet.</p>
+    <% } else { %>
+      <% notifications.forEach(n => { %>
+        <%
+          // build a link based on notification type
+          let link = '#';
+          if (n.NotificationType === 'friend_request' || n.NotificationType === 'friend_accepted') {
+            link = '/profile/' + n.ReferenceID;
+          } else if (n.NotificationType === 'review') {
+            link = '/book/' + n.ReferenceID;
+          }
+        %>
+        <a href="<%= link %>" style="display: block; background: <%= n.Is_Read ? 'white' : 'var(--pink-soft)' %>; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; text-decoration: none; color: var(--ink);">
+          <div style="font-size: 14px; line-height: 1.5;"><%= n.Message %></div>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+            <%= new Date(n.Created_At).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) %>
+          </div>
+        </a>
+      <% }) %>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

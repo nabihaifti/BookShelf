@@ -1,0 +1,12 @@
+<%- include('partials/head', { title: error || 'Error' }) %>
+<%- include('partials/header') %>
+
+<main class="container">
+  <div class="empty-state">
+    <h1 class="page-title"><%= status || 'Oops!' %></h1>
+    <p><%= message || 'Something went wrong.' %></p>
+    <a href="/" class="btn-matcha" style="display:inline-block; margin-top:1rem; text-decoration:none; padding: 0.6rem 1.2rem; border-radius:8px;">Go Home</a>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

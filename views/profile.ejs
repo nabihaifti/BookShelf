@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: user.Name + ' — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+
+    <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 28px; display: flex; gap: 24px; align-items: center;">
+      <div style="width: 100px; height: 100px; background: var(--pink); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: Fraunces, serif; font-size: 44px; font-weight: 500;">
+        <%= user.Name.charAt(0).toUpperCase() %>
+      </div>
+
+      <div style="flex: 1;">
+        <h1 style="font-size: 28px; margin-bottom: 4px;"><%= user.Name %></h1>
+        <div style="color: var(--muted); font-size: 13px; margin-bottom: 12px;">
+          joined <%= new Date(user.Registered_At).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) %>
+        </div>
+
+        <div style="display: flex; gap: 24px; font-size: 13px;">
+          <div><strong style="color: var(--ink); font-size: 18px; display: block;"><%= stats.review_count %></strong><span style="color: var(--muted);">reviews</span></div>
+          <div><strong style="color: var(--ink); font-size: 18px; display: block;"><%= stats.list_count %></strong><span style="color: var(--muted);">lists</span></div>
+          <div><strong style="color: var(--ink); font-size: 18px; display: block;"><%= stats.friend_count %></strong><span style="color: var(--muted);">friends</span></div>
+        </div>
+      </div>
+
+      <div>
+        <% if (currentUser && currentUser.id === user.User_ID) { %>
+          <a href="/profile/edit" class="btn">edit profile</a>
+        <% } else if (currentUser) { %>
+          <% if (friendStatus === 'accepted') { %>
+            <form action="/friends/<%= user.User_ID %>/delete" method="post">
+              <button type="submit" class="btn">unfriend</button>
+            </form>
+          <% } else if (friendStatus === 'sent') { %>
+            <form action="/friends/<%= user.User_ID %>/delete" method="post">
+              <button type="submit" class="btn">cancel request</button>
+            </form>
+          <% } else if (friendStatus === 'received') { %>
+            <form action="/friends/<%= user.User_ID %>/accept" method="post">
+              <button type="submit" class="btn-primary">accept request</button>
+            </form>
+          <% } else { %>
+            <form action="/friends/<%= user.User_ID %>" method="post">
+              <button type="submit" class="btn-pink">add friend</button>
+            </form>
+          <% } %>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (reviews.length > 0) { %>
+      <h2 class="section-h">recent reviews</h2>
+      <% reviews.forEach(r => { %>
+        <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;">
+          <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">
+            reviewed
+            <a href="/book/<%= r.Book_ID %>" style="color: var(--ink); font-weight: 600;"><%= r.BookTitle %></a>
+            ·
+            <span style="color: var(--gold);"><%= '★'.repeat(r.Rating) + '☆'.repeat(5 - r.Rating) %></span>
+          </div>
+          <% if (r.Text) { %>
+            <div style="font-size: 14px; color: var(--ink-soft); line-height: 1.5;"><%= r.Text %></div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <% if (lists.length > 0) { %>
+      <h2 class="section-h pink" style="margin-top: 28px;">lists</h2>
+      <% lists.forEach(l => { %>
+        <div style="background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px;">
+          <a href="/list/<%= l.List_ID %>" style="font-family: Fraunces, serif; font-size: 16px; color: var(--ink); font-weight: 500;">
+            <%= l.List_Name %>
+          </a>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+            <%= l.book_count %> book<%= l.book_count == 1 ? '' : 's' %>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

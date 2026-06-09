@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'My shelves — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <h1 style="font-size: 28px; margin-bottom: 24px;">my shelves</h1>
+
+    <%
+      const sections = [
+        { key: 'currently_reading', label: 'currently reading', accent: 'pink' },
+        { key: 'want_to_read', label: 'want to read', accent: '' },
+        { key: 'read', label: 'read', accent: 'pink' }
+      ];
+    %>
+
+    <% sections.forEach(s => { %>
+      <section style="margin-bottom: 36px;">
+        <h2 class="section-h <%= s.accent %>"><%= s.label %> (<%= shelves[s.key].length %>)</h2>
+        <% if (shelves[s.key].length === 0) { %>
+          <p style="color: var(--muted); font-size: 14px;">nothing here yet.</p>
+        <% } else { %>
+          <div class="book-grid">
+            <% shelves[s.key].forEach(book => { %>
+              <%- include('partials/book-card', { book }) %>
+            <% }) %>
+          </div>
+        <% } %>
+      </section>
+    <% }) %>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

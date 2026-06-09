@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'Edit profile — BookApp' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="container">
+    <div class="auth-card">
+      <h1>edit profile</h1>
+      <p class="sub">update your account info</p>
+
+      <form action="/profile/edit" method="post">
+        <div class="form-group">
+          <label>name</label>
+          <input type="text" name="name" value="<%= name %>" required />
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;">save changes</button>
+      </form>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
