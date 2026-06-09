@@ -1,6 +1,6 @@
 # 📚 BookApp
 
-A Goodreads-style book social app built as a Database Systems semester project at NUST, Spring 2026.
+A book social app built as a Database Systems semester project 
 
 Users can search books, track their reading, write reviews, create custom lists, and connect with friends.
 
