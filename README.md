@@ -140,16 +140,8 @@ BookApp/
 └── .env                ← Not in git
 ```
 
----
-
-## Team
-
-| Name | Role |
-|------|------|
-| M. Uzair Nadeem | Backend, DB, Frontend |
-| Shayan Ahmed Siddiqui | Backend, DB, Frontend |
-| Nabiha Iftikhar | Backend, DB, Frontend |
 
 **Course:** CS220 — Database Systems
-**Institution:** NUST
-**Semester:** Spring 2026
+
+<img width="1854" height="907" alt="image" src="https://github.com/user-attachments/assets/32a409f5-cb56-46c8-b61f-b4d3b2fb415a" />
+
